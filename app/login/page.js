@@ -17,7 +17,7 @@ export default function Login() {
     e.preventDefault();
 
     const data = await fetchData(
-      "http://localhost:8080/api/auth/login",
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/login`,
       "POST",
       formData
     );

@@ -22,7 +22,7 @@ export default function Signup() {
     const handleSignup = async (e) => {
         e.preventDefault();
 
-        const data = await fetchData('http://localhost:8080/api/auth/signup', 'POST', formData);
+        const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/signup`, 'POST', formData);
 
         if (data.token) {
           localStorage.setItem('token', data.token)

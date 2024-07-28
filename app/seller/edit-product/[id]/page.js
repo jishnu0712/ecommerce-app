@@ -20,7 +20,7 @@ export default function EditProduct({ params }) {
     async function getData() {
       if (id) {
         const data = await fetchData(
-          `http://localhost:8080/api/buyers/product/${id}`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/product/${id}`
         );
         setForm(data[0] ?? {});
       }
@@ -40,7 +40,7 @@ export default function EditProduct({ params }) {
     e.preventDefault();
 
     const res = fetchData(
-      `http://localhost:8080/api/sellers/product/${id}`,
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/sellers/product/${id}`,
       "PUT", form,
       { Authorization: `Bearer ${localStorage.getItem("token")}` }
     );

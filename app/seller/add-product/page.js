@@ -24,7 +24,7 @@ export default function AddProduct() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    const data = await fetchData('http://localhost:8080/api/sellers/product', 'POST', form, 
+    const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sellers/product`, 'POST', form, 
       {'Authorization': `Bearer ${localStorage.getItem('token')}`})
     
     if (!data) {

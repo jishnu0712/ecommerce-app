@@ -12,14 +12,14 @@ export default function Products() {
 
   useEffect(() => {
     async function getProducts() {
-      const data = await fetchData('http://localhost:8080/api/buyers/allproducts');
+      const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/allproducts`);
       setProducts(data);
     }
     getProducts();
   }, [])
 
   const handleDelete = async (id) => {
-    const data = await fetchData(`http://localhost:8080/api/sellers/product/${id}`, 'DELETE', null, 
+    const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sellers/product/${id}`, 'DELETE', null, 
       {'Authorization': `Bearer ${localStorage.getItem('token')}`});
 
     if (!data) {

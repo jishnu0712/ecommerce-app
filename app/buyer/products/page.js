@@ -6,10 +6,11 @@ import { useState, useEffect } from 'react'
 export default function Products() {
   const [products, setProducts] = useState([])
   const [search, setSearch] = useState('')
+  const [addedProducts, setAddedProducts] = useState([]);
 
   useEffect(() => {
     async function getProducts() {
-        const res = await fetchData('http://localhost:8080/api/buyers/allproducts');
+        const res = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/allproducts`);
         setProducts(res);
     }
     getProducts();
@@ -22,13 +23,12 @@ export default function Products() {
   )
 
   const handleAddToCart = async (productId) => {
-    const res = fetchData('http://localhost:8080/api/buyers/cart', 'POST', {productId}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
-    
+    const res = fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/cart`, 'POST', {productId}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+    setAddedProducts(prev => ([...prev, productId]));
     if (!res) {
       alert('Failed to add product to cart');
       return;
     }
-    alert('Product added to cart');
   }
 
   return (
@@ -52,7 +52,8 @@ export default function Products() {
               </div>
               <button
                 onClick={() => handleAddToCart(product.id)}
-                className="bg-blue-500 text-white rounded px-4 py-2"
+                className={`text-white rounded px-4 py-2 ${addedProducts.includes(product.id) ? `bg-blue-300` : `bg-blue-500`}`}
+                disabled={addedProducts.includes(product.id)}
               >
                 Add to Cart
               </button>

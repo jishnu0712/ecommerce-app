@@ -19,5 +19,6 @@ export default async function fetchData(url, method = "GET", data, headers = {})
     return false;
   }
 
-  return await res.json();
+  const text = await res.text();
+  return text ? JSON.parse(text) : {};
 }
