@@ -15,9 +15,12 @@ app.use('/api/buyers', require('./routes/buyers'));
 
 
 app.use((err, req, res, next) => {
-  console.error(err.stack)
-  res.status(statusCode).send('Something broke!')
-})
+  console.error(err);
+  const message = err.message;
+  const status = err.statusCode || 500;
+  const data = err.data;
+  res.status(status).json({message: message, data: data});
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
