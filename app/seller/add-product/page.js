@@ -1,7 +1,11 @@
 "use client";
+import fetchData from '@/utils/fetchData';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react'
 
 export default function AddProduct() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
     name: '',
     category: '',
@@ -19,16 +23,16 @@ export default function AddProduct() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    // Add product submit logic here
-    await fetch('http://localhost:8080/api/sellers/product', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
-      body: JSON.stringify(form),
-    })
-    console.log('Product added:', form)
+
+    const data = await fetchData('http://localhost:8080/api/sellers/product', 'POST', form, 
+      {'Authorization': `Bearer ${localStorage.getItem('token')}`})
+    
+    if (!data) {
+      alert('Failed to add product');
+      return;
+    }
+
+    router.push('/seller/products');
   }
 
   return (

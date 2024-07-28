@@ -3,26 +3,30 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import fetchData from '@/utils/fetchData';
+import { useRouter } from 'next/navigation';
 
 export default function Products() {
+  const router = useRouter();
   const [products, setProducts] = useState([])
 
   useEffect(() => {
     async function getProducts() {
-        const res = await fetch('http://localhost:8080/api/buyers/allproducts');
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        setProducts(data);
+      const data = await fetchData('http://localhost:8080/api/buyers/allproducts');
+      setProducts(data);
     }
     getProducts();
   }, [])
 
-  const handleDelete = (id) => {
-    // Delete product by id
-    console.log('Deleting product with id:', id)
-    setProducts(products.filter(product => product.id !== id))
+  const handleDelete = async (id) => {
+    const data = await fetchData(`http://localhost:8080/api/sellers/product/${id}`, 'DELETE', null, 
+      {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+
+    if (!data) {
+      alert('Failed to delete product');
+      return;
+    }
+    setProducts(products.filter(product => product.id !== id));
   }
 
   return (
@@ -55,7 +59,6 @@ export default function Products() {
       <div className="mt-8">
         <Link href="/seller/add-product" className="bg-blue-500 text-white rounded px-4 py-2">
             Add New Product
-
         </Link>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Dropdown from '@/components/Dropdown';
+import fetchData from '@/utils/fetchData';
 import Link from 'next/link'
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -18,27 +19,17 @@ export default function Signup() {
         setFormData(prev => ({...prev, role: e }));
     };
 
-    const handleSignup = (e) => {
+    const handleSignup = async (e) => {
         e.preventDefault();
 
-        console.log(formData)
+        const data = await fetchData('http://localhost:8080/api/auth/signup', 'POST', formData);
 
-        fetch('http://localhost:8080/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        })
-         .then(res => res.json())
-         .then(data => {
-            if (data.token) {
-              localStorage.setItem('token', data.token)
-              router.push('/seller/products')
-            } else {
-              alert('Login failedd')
-            }
-        })
+        if (data.token) {
+          localStorage.setItem('token', data.token)
+          router.push('/seller/products')
+        } else {
+          alert('signup failed')
+        }
     }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">

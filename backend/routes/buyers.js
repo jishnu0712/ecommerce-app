@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { searchProducts, addToCart, removeFromCart, getAllProducts, getCartItems } = require('../controllers/buyers');
+const { searchProducts, addToCart, removeFromCart, getAllProducts, getCartItems, getProductById } = require('../controllers/buyers');
 const auth = require('../middleware/auth');
 
 
@@ -9,6 +9,9 @@ router.get('/allproducts', getAllProducts);
 
 // GET /api/buyers/products
 router.get('/products', searchProducts);
+
+// GET /api/buyers/:id
+router.get('/product/:id', getProductById);
 
 // POST /api/buyers/cart
 router.post('/cart', auth, addToCart);

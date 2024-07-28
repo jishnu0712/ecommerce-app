@@ -1,39 +1,56 @@
 "use client";
 
-import { useRouter } from 'next/router'
-import { useState, useEffect } from 'react'
+import fetchData from "@/utils/fetchData";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
-export default function EditProduct() {
-  const router = useRouter()
-  const { id } = router.query
+export default function EditProduct({ params }) {
+  const router = useRouter();
+  const id = params.id;
 
   const [form, setForm] = useState({
-    name: '',
-    category: '',
-    description: '',
-    price: '',
-    discount: '',
-  })
+    name: "",
+    category: "",
+    description: "",
+    price: "",
+    discount: "",
+  });
 
   useEffect(() => {
-    if (id) {
-      // Fetch product data by id and setForm with fetched data
-      console.log('Fetching product data for id:', id)
+    async function getData() {
+      if (id) {
+        const data = await fetchData(
+          `http://localhost:8080/api/buyers/product/${id}`
+        );
+        setForm(data[0] ?? {});
+      }
     }
-  }, [id])
+
+    getData();
+  }, [id]);
 
   const handleChange = (e) => {
     setForm({
       ...form,
       [e.target.name]: e.target.value,
-    })
-  }
+    });
+  };
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Edit product submit logic here
-    console.log('Product edited:', form)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const res = fetchData(
+      `http://localhost:8080/api/sellers/product/${id}`,
+      "PUT", form,
+      { Authorization: `Bearer ${localStorage.getItem("token")}` }
+    );
+
+    if (!res) {
+      alert("Failed to edit product");
+      return;
+    }
+    router.push(`/seller/products`);
+  };
 
   return (
     <div>
@@ -78,10 +95,13 @@ export default function EditProduct() {
           onChange={handleChange}
           className="block w-full border rounded p-2"
         />
-        <button type="submit" className="bg-blue-500 text-white rounded px-4 py-2">
+        <button
+          type="submit"
+          className="bg-blue-500 text-white rounded px-4 py-2"
+        >
           Edit Product
         </button>
       </form>
     </div>
-  )
+  );
 }

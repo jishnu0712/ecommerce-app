@@ -1,5 +1,6 @@
 "use client";
 
+import fetchData from '@/utils/fetchData';
 import { useState, useEffect } from 'react'
 
 export default function Products() {
@@ -8,12 +9,8 @@ export default function Products() {
 
   useEffect(() => {
     async function getProducts() {
-        const res = await fetch('http://localhost:8080/api/buyers/allproducts');
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        setProducts(data);
+        const res = await fetchData('http://localhost:8080/api/buyers/allproducts');
+        setProducts(res);
     }
     getProducts();
   }, [])
@@ -24,8 +21,14 @@ export default function Products() {
     product.category.toLowerCase().includes(search.toLowerCase())
   )
 
-  const handleAddToCart = (productId) => {
-    console.log('Adding product to cart:', productId)
+  const handleAddToCart = async (productId) => {
+    const res = fetchData('http://localhost:8080/api/buyers/cart', 'POST', {productId}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+    
+    if (!res) {
+      alert('Failed to add product to cart');
+      return;
+    }
+    alert('Product added to cart');
   }
 
   return (

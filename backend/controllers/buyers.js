@@ -14,6 +14,20 @@ const searchProducts = async (req, res, next) => {
   }
 };
 
+const getProductById = async (req, res, next) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query(
+      'SELECT * FROM products WHERE id = $1',
+      [id]
+    );
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+}
+
 const addToCart = async (req, res, next) => {
   const { productId } = req.body;
 
@@ -43,7 +57,10 @@ const getCartItems = async (req, res, next) => {
   const userId = req.user.userId;
 
   try {
-    const result = await pool.query('SELECT * FROM carts WHERE user_id = $1', [userId]);
+    const result = await pool.query(`SELECT p.id, p.name, p.category, p.price
+      FROM carts 
+      LEFT JOIN products p on carts.product_id = p.id
+      WHERE user_id = $1`, [userId]);
     res.json(result.rows);
   } catch (err) {
     next(err);
@@ -71,4 +88,4 @@ const getAllProducts = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllProducts, searchProducts, addToCart, getCartItems, removeFromCart };
+module.exports = { getAllProducts, searchProducts, getProductById, addToCart, getCartItems, removeFromCart };

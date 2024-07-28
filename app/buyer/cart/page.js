@@ -1,16 +1,19 @@
 "use client";
+import fetchData from '@/utils/fetchData';
 import { useState, useEffect } from 'react'
+import { nanoid } from 'nanoid'
 
 export default function Cart() {
   const [cart, setCart] = useState([])
 
   useEffect(() => {
-    // Fetch cart items
-    console.log('Fetching cart items')
-    setCart([
-      { id: 1, name: 'Product 1', category: 'Category 1', price: 100, quantity: 1 },
-      { id: 2, name: 'Product 2', category: 'Category 2', price: 200, quantity: 2 },
-    ])
+    async function getCartItems() {
+      const res = await fetchData('http://localhost:8080/api/buyers/cart', 'GET', null, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+      
+      let newRes = res.map(item => ({...item, quantity: 1}))
+      setCart(newRes);
+    }
+    getCartItems();
   }, [])
 
   const handleRemoveFromCart = (productId) => {
@@ -31,7 +34,7 @@ export default function Cart() {
       {cart.length > 0 ? (
         <ul className="space-y-4">
           {cart.map(item => (
-            <li key={item.id} className="border p-4 rounded">
+            <li key={nanoid()} className="border p-4 rounded">
               <div className="flex justify-between items-center">
                 <div>
                   <h3 className="text-xl font-bold">{item.name}</h3>
