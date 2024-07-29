@@ -91,4 +91,14 @@ const deleteProduct = async (req, res, next) => {
   }
 };
 
-module.exports = { addProduct, editProduct, deleteProduct };
+const getMyProducts = async (req, res, next) => {
+  try {
+    const userId = req.user.userId;
+    const result = await pool.query('SELECT * FROM products where seller_id = $1', [userId]);
+    res.json(result.rows);
+  } catch (err) {
+    next(err);
+  }
+};
+
+module.exports = { addProduct, editProduct, deleteProduct, getMyProducts};

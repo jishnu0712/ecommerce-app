@@ -12,7 +12,8 @@ export default function Products() {
 
   useEffect(() => {
     async function getProducts() {
-      const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/allproducts`);
+      const data = await fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/sellers/myproducts`, 'GET', null, 
+        {'Authorization': `Bearer ${localStorage.getItem('token')}` });
       setProducts(data);
     }
     getProducts();

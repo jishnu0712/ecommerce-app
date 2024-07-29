@@ -30,6 +30,18 @@ export default function Signup() {
         } else {
           alert('signup failed')
         }
+        
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+
+          if (data.role === "seller") {
+            router.push("/seller/products");
+          } else {
+            router.push("/buyer/products");
+          }
+        } else {
+          alert("Login failed");
+        }
     }
   return (
     <div className="min-h-screen flex flex-col items-center justify-center">

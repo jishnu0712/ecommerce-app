@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addProduct, editProduct, deleteProduct } = require('../controllers/sellers');
+const { addProduct, editProduct, deleteProduct, getMyProducts } = require('../controllers/sellers');
 const auth = require('../middleware/auth');
 
 const { body } = require('express-validator');
@@ -20,6 +20,9 @@ router.put('/product/:id', auth, [
     body('description').trim().isLength({ min: 3 }),
     body('price').trim().isLength({ min: 1 }),
 ], editProduct);
+
+// GET /api/sellers/myproducts
+router.get('/myproducts', auth, getMyProducts);
 
 // DELETE /api/sellers/product:id
 router.delete('/product/:id', auth, deleteProduct);

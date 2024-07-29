@@ -24,7 +24,7 @@ const registerUser = async (req, res, next) => {
       { userId: result.rows[0].id, role: role },
       process.env.JWT_SECRET
     );
-    res.status(201).json({ token });
+    res.status(201).json({ token, role });
   } catch (err) {
     next(err);
   }
