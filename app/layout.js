@@ -4,7 +4,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "LocalHut",
+  title: process.env.NEXT_PUBLIC_APP_NAME,
   description: "Groceries at best prices",
 };
 

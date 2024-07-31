@@ -11,6 +11,7 @@ export default function AddProduct() {
     category: '',
     description: '',
     price: '',
+    quantity: '',
     discount: '',
   })
 
@@ -67,6 +68,14 @@ export default function AddProduct() {
           name="price"
           placeholder="Price"
           value={form.price}
+          onChange={handleChange}
+          className="block w-full border rounded p-2"
+        />
+        <input
+          type="number"
+          name="quantity"
+          placeholder="quantity"
+          value={form.quantity}
           onChange={handleChange}
           className="block w-full border rounded p-2"
         />

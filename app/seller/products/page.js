@@ -4,10 +4,8 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import fetchData from '@/utils/fetchData';
-import { useRouter } from 'next/navigation';
 
 export default function Products() {
-  const router = useRouter();
   const [products, setProducts] = useState([])
 
   useEffect(() => {

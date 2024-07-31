@@ -12,7 +12,7 @@ const addProduct = async (req, res, next) => {
       throw error;
     }
 
-    const { name, category, description, price, discount } = req.body;
+    const { name, category, description, price, quantity, discount } = req.body;
     const userId = req.user.userId;
     const role = req.user.role;
 
@@ -23,10 +23,10 @@ const addProduct = async (req, res, next) => {
     }
 
     const result = await pool.query(
-      "INSERT INTO products (name, category, description, price, discount, seller_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
-      [name, category, description, price, discount, userId]
+      "INSERT INTO products (name, category, description, price, quantity, discount, seller_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
+      [name, category, description, price, quantity, discount, userId]
     );
-    res.status(201).json(result.rows[0]);
+    res.status(201).json({ message: 'Product added successfully!', data: result.rows[0]});
   } catch (err) {
     next(err);
   }
@@ -56,13 +56,13 @@ const editProduct = async (req, res, next) => {
       error.statusCode = 403;
       throw error;
     }
-    const { name, category, description, price, discount } = req.body;
+    const { name, category, description, price, quantity, discount } = req.body;
 
     const result = await pool.query(
-      "UPDATE products SET name = $1, category = $2, description = $3, price = $4, discount = $5 WHERE id = $6 RETURNING *",
-      [name, category, description, price, discount, id]
+      "UPDATE products SET name = $1, category = $2, description = $3, price = $4, discount = $5, quantity = $6 WHERE id = $7 RETURNING *",
+      [name, category, description, price, discount, quantity, id]
     );
-    res.json(result.rows[0]);
+    res.json({message: 'Product updated!', data:result.rows[0]});
   } catch (err) {
     next(err);
   }
