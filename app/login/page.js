@@ -69,6 +69,9 @@ export default function Login() {
         <Link href="/signup" className="text-blue-500 underline">
           Sign Up
         </Link>
+        <Link href="/resetpassword" className="text-blue-500 underline">
+          Reset Password
+        </Link>
       </div>
     </div>
   );

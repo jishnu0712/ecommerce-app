@@ -60,4 +60,33 @@ const loginUser = async (req, res, next) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+const resetPassword = async (req, res, next) => {
+  try {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      const error = new Error("Validation failed");
+      error.statusCode = 422;
+      error.data = errors.array();
+      throw error;
+    }
+  
+    const { username } = req.body;
+    const result = await pool.query("SELECT * FROM users WHERE username = $1", [
+      username,
+    ]);
+
+    if (result.rows.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+
+    const updaatedUser = await pool.query("UPDATE users SET password = '$2a$10$yRccwe0IrDmXz6USsEyMee8DZmu6ju0XIGlXuuuG.H6EQfO3Sy60u' WHERE username = $1", [
+      username,
+    ]);
+
+    return res.status(201).json({message: 'Password reset successful'});
+  } catch(err) {
+    next(err);
+  }
+}
+
+module.exports = { registerUser, loginUser, resetPassword };

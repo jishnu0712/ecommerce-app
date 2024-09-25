@@ -4,9 +4,12 @@ import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import fetchData from '@/utils/fetchData';
 import ProductList from '@/components/ProductList';
+import { useSelector } from 'react-redux';
 
 export default function Products() {
   const [products, setProducts] = useState([]);
+
+  const cart = useSelector(state => state.cart)
 
   useEffect(() => {
     async function getProducts() {
