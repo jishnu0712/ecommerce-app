@@ -1,7 +1,9 @@
 "use client";
 
+import { cartActions } from '@/redux/slices/cartSlice';
 import fetchData from '@/utils/fetchData';
 import { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 export default function Products() {
   const [products, setProducts] = useState([])
@@ -16,15 +18,27 @@ export default function Products() {
     getProducts();
   }, [])
 
+  const dispatch = useDispatch();
+
+  const cart = useSelector(state => state.cart.items);
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
     product.category.toLowerCase().includes(search.toLowerCase())
   )
 
-  const handleAddToCart = async (productId) => {
-    const res = fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/cart`, 'POST', {productId}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
-    setAddedProducts(prev => ([...prev, productId]));
+  const handleAddToCart = async (product) => {
+    const res = fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/cart`, 'POST', {productId: product.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
+    setAddedProducts(prev => ([...prev, product.id]));
+    // add to cart in redux
+    dispatch(cartActions.addToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      totalPrice: product.price,
+      quantity: 1,
+    }));
+
     if (!res) {
       alert('Failed to add product to cart');
       return;
@@ -51,7 +65,7 @@ export default function Products() {
                 <p>₹{product.price}</p>
               </div>
               <button
-                onClick={() => handleAddToCart(product.id)}
+                onClick={() => handleAddToCart(product)}
                 className={`text-white rounded px-4 py-2 ${addedProducts.includes(product.id) ? `bg-blue-300` : `bg-blue-500`}`}
                 disabled={addedProducts.includes(product.id)}
               >

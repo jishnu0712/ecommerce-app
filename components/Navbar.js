@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = ({ user }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -18,6 +19,8 @@ const Navbar = ({ user }) => {
     setIsAuthenticated(false);
     router.push("/login");
   };
+
+  const cart = useSelector(state => state.cart.items);
 
   return (
     <nav className="bg-blue-600 p-4">
@@ -36,7 +39,7 @@ const Navbar = ({ user }) => {
             <>
               {(user === "buyer") && (
                 <Link href="/buyer/cart" className="text-white">
-                  Cart
+                  Cart {cart.length}
                 </Link>
               )}
 
