@@ -1,13 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import storage from "redux-persist/lib/storage";
+
+const initialState = {
+    items: [],
+    total: 0,
+    totalQuantity: 0,
+    showCart: false,
+};
 
 const cartSlice = createSlice({
     name: 'cart',
-    initialState: {
-        items: [],
-        total: 0,
-        totalQuantity: 0,
-        showCart: false,
-    },
+    initialState: initialState,
     reducers: {
         addToCart(state, action) {
             const newItem = action.payload;
@@ -25,7 +28,7 @@ const cartSlice = createSlice({
                     quantity: 1,
                 });
             }
-            state.total += newItem.price;
+            state.total += parseInt(newItem.price);
             state.totalQuantity++;
         },
         removeFromCart(state, action) {
@@ -47,9 +50,13 @@ const cartSlice = createSlice({
             }
             
             state.totalQuantity--;
+            state.total -= parseInt(existingItem.price);
         },
         toggleCart(state) {
             state.showCart = !state.showCart;
+        },
+        logout() {
+            return initialState;
         },
     }
 });

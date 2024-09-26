@@ -8,7 +8,6 @@ import { useDispatch, useSelector } from 'react-redux';
 export default function Products() {
   const [products, setProducts] = useState([])
   const [search, setSearch] = useState('')
-  const [addedProducts, setAddedProducts] = useState([]);
 
   useEffect(() => {
     async function getProducts() {
@@ -20,7 +19,7 @@ export default function Products() {
 
   const dispatch = useDispatch();
 
-  const cart = useSelector(state => state.cart.items);
+  const cartItems = useSelector(state => state.cart.items);
 
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -29,8 +28,7 @@ export default function Products() {
 
   const handleAddToCart = async (product) => {
     const res = fetchData(`${process.env.NEXT_PUBLIC_BASE_URL}/api/buyers/cart`, 'POST', {productId: product.id}, {'Authorization': `Bearer ${localStorage.getItem('token')}`});
-    setAddedProducts(prev => ([...prev, product.id]));
-    // add to cart in redux
+
     dispatch(cartActions.addToCart({
       id: product.id,
       name: product.name,
@@ -66,8 +64,8 @@ export default function Products() {
               </div>
               <button
                 onClick={() => handleAddToCart(product)}
-                className={`text-white rounded px-4 py-2 ${addedProducts.includes(product.id) ? `bg-blue-300` : `bg-blue-500`}`}
-                disabled={addedProducts.includes(product.id)}
+                className={`text-white rounded px-4 py-2 ${cartItems.find(p => p.id === product.id) ? `bg-blue-300` : `bg-blue-500`}`}
+                disabled={cartItems.find(p => p.id === product.id)}
               >
                 Add to Cart
               </button>

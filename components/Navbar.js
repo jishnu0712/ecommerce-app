@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+
+import { cartActions } from "@/redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { persistor } from "@/redux/store";
 
 const Navbar = ({ user }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,9 +17,14 @@ const Navbar = ({ user }) => {
     setIsAuthenticated(!!token);
   }, []);
 
+  const dispatch = useDispatch();
+
   const handleLogout = () => {
     localStorage.removeItem("token");
+    persistor.purge(); // This clears all the persisted Redux state from storage
+    dispatch(cartActions.logout());
     setIsAuthenticated(false);
+  
     router.push("/login");
   };
 
